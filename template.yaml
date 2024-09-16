@@ -1,0 +1,34 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  S3CopyFile:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: s3_copy_file_dotnet
+      ContentUri: .
+      CompatibleRuntimes:
+        - dotnet8
+      RetentionPolicy: Retain
+    Metadata:
+      BuildMethod: makefile
+  TestBucket:
+    Type: AWS::S3::Bucket
+  # TestLambda:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     Handler: index.handler
+  #     Runtime: dotnet8
+  #     CodeUri: ./testing-lambda-extension
+  #     Timeout: 10
+  #     Layers:
+  #       # - arn:aws:lambda:eu-north-1:663056784065:layer:nodejs-example-extension:3
+  #       # - arn:aws:lambda:eu-north-1:663056784065:layer:test_test:1  
+  #       # - !Ref S3CopyFile
+  #     Environment:
+  #       Variables:
+  #         S3_BUCKET: !Ref TestBucket
+  #         S3_KEY: test.txt
+  #     Policies:
+  #       - S3ReadPolicy:
+  #           BucketName: !Ref TestBucket
+  

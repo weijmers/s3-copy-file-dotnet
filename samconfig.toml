@@ -1,0 +1,9 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "s3-copy-file-nodejs"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-rainiyi0ji36"
+s3_prefix = "s3-copy-file-nodejs"
+region = "eu-north-1"
+capabilities = "CAPABILITY_IAM"

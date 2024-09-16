@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>None</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(Platform)' == 'AnyCPU' "> 
+    <Content Include="extensions/s3_copy_file_dotnet"> 
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory> 
+    </Content> 
+  </ItemGroup>
+
+  <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+   <Target Name="RenameExtensionHook" AfterTargets="Publish" Condition=" '$(PublishSingleFile)' == 'true' ">
+    <Move SourceFiles="$(PublishDir)/s3_copy_file_dotnet" DestinationFiles="$(PublishDir)/extensions/s3_copy_file_dotnet" OverwriteReadOnlyFiles="true" />
+  </Target>
+</Project>
