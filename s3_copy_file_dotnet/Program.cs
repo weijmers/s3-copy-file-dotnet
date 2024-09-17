@@ -1,33 +1,23 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
+using System.IO;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Util;
 
 namespace s3_copy_file_dotnet;
 
 class Program
 {
-    private static HttpClient? _client;
-    private static string baseUrl = $"http://{Environment.GetEnvironmentVariable("AWS_LAMBDA_RUNTIME_API")}/2020-01-01/extension";
-
-    private static HttpClient GetClient()
-    {
-        if (_client is null)
-        {
-            _client = new HttpClient();
-            _client.BaseAddress = new UriBuilder(baseUrl).Uri;
-            _client.Timeout = Timeout.InfiniteTimeSpan;
-        }
-
-        return _client;
-    }
-
     static async Task Main(string[] args)
     {
         var extensionName = args[0];
         var client = new ExtensionHttpClient(extensionName);
         var extensionId = await client.Register() ?? throw new Exception("Register failure ...");
 
-        // run your code ...
+        await CopyFile();
 
         while (true)
         {
@@ -58,5 +48,20 @@ class Program
         await Task.CompletedTask;
 
         Environment.Exit(0);
+    }
+
+    private static async Task CopyFile()
+    {
+        var client = new AmazonS3Client();
+        var request = new GetObjectRequest
+        {
+            BucketName = Environment.GetEnvironmentVariable("S3_BUCKET"),
+            Key = Environment.GetEnvironmentVariable("S3_KEY"),
+        };
+        var filePath = Path.Combine("/tmp", Environment.GetEnvironmentVariable("S3_KEY"));
+
+        using var response = await client.GetObjectAsync(request);
+        using var fileStream = File.Create(filePath);
+        await response.ResponseStream.CopyToAsync(fileStream);
     }
 }

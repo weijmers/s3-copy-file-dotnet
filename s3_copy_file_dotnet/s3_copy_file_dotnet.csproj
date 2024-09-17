@@ -20,6 +20,10 @@
     </Content> 
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.7.402.12" />
+  </ItemGroup>
+
   <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
     <PublishTrimmed>true</PublishTrimmed>
     <PublishSingleFile>true</PublishSingleFile>

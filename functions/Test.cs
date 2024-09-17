@@ -1,4 +1,6 @@
-﻿using Amazon.Lambda.Core;
+﻿using System;
+using System.Threading.Tasks;
+using Amazon.Lambda.Core;
 using Amazon.Lambda.Serialization.SystemTextJson;
 
 [assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
@@ -10,7 +12,7 @@ public class Test
 
     public async Task Handler(object input, ILambdaContext context)
     {
-        Console.WriteLine("Testing testing ...");
+        Console.WriteLine(string.Join(Environment.NewLine, Directory.GetFiles("/tmp", "*.txt")));
         await Task.CompletedTask;
     }
 }
