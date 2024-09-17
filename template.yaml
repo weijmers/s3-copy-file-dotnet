@@ -19,10 +19,12 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./functions
-      Handler: functions::Test::Handler
+      Handler: functions::functions.Test::Handler
       Runtime: dotnet8
       MemorySize: 512
       Timeout: 30
+      Layers:
+        - !Ref S3CopyFile
       Environment:
         Variables:
           S3_BUCKET: !Ref TestBucket

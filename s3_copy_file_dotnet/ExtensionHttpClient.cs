@@ -1,14 +1,16 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace s3_copy_file_dotnet;
 
 internal class ExtensionHttpClient
 {
-    private static readonly HttpClient httpClient;
+    private static HttpClient httpClient;
     private static string baseUrl = $"http://{Environment.GetEnvironmentVariable("AWS_LAMBDA_RUNTIME_API")}/2020-01-01/extension";
 
     public string ExtensionName { get; private set; }
@@ -24,29 +26,24 @@ internal class ExtensionHttpClient
     {
         httpClient = new HttpClient
         {
-            BaseAddress = new UriBuilder(baseUrl).Uri,
             Timeout = Timeout.InfiniteTimeSpan,
         };
     }
 
     public async Task<string?> Register()
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "register")
-        {
-            Content = new StringContent(JsonSerializer.Serialize(new { events = new[] { "INVOKE", "SHUTDOWN" } }), Encoding.UTF8, "application/json")
-        };
-        request.Headers.Add("Lambda-Extension-Name", "NAME");
-        request.Headers.Add("Content-Type", "application/json");
+        var content = new StringContent(JsonSerializer.Serialize(new { events = new[] { "INVOKE", "SHUTDOWN" } }), Encoding.UTF8, "application/json");
+        content.Headers.Add("Lambda-Extension-Name", ExtensionName);
 
-        var response = await httpClient.SendAsync(request);
-        return string.Join(", ", response.Headers.GetValues("lambda-extension-identifier"));
+        var response = await httpClient.PostAsync($"{baseUrl}/register", content);
+
+        return response.Headers.GetValues("Lambda-Extension-Identifier").FirstOrDefault();
     }
 
     public async Task<(string? type, string payload)> Next(string id)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, $"next/{id}");
+        var request = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}/event/next");
         request.Headers.Add("Lambda-Extension-Identifier", id);
-        request.Headers.Add("Content-Type", "application/json");
 
         var response = await httpClient.SendAsync(request);
         var responseContent = await response.Content.ReadAsStringAsync();

@@ -23,10 +23,7 @@ class Program
 
     static async Task Main(string[] args)
     {
-        var extensionName = (1 == args.Length)
-            ? args[0]
-            : Assembly.GetEntryAssembly()?.GetName()?.Name;
-
+        var extensionName = args[0];
         var client = new ExtensionHttpClient(extensionName);
         var extensionId = await client.Register() ?? throw new Exception("Register failure ...");
 
