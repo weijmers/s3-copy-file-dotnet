@@ -15,22 +15,18 @@ Resources:
       BuildMethod: makefile
   TestBucket:
     Type: AWS::S3::Bucket
-  # TestLambda:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     Handler: index.handler
-  #     Runtime: dotnet8
-  #     CodeUri: ./testing-lambda-extension
-  #     Timeout: 10
-  #     Layers:
-  #       # - arn:aws:lambda:eu-north-1:663056784065:layer:nodejs-example-extension:3
-  #       # - arn:aws:lambda:eu-north-1:663056784065:layer:test_test:1  
-  #       # - !Ref S3CopyFile
-  #     Environment:
-  #       Variables:
-  #         S3_BUCKET: !Ref TestBucket
-  #         S3_KEY: test.txt
-  #     Policies:
-  #       - S3ReadPolicy:
-  #           BucketName: !Ref TestBucket
-  
+  TestLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./functions
+      Handler: functions::Test::Handler
+      Runtime: dotnet8
+      MemorySize: 512
+      Timeout: 30
+      Environment:
+        Variables:
+          S3_BUCKET: !Ref TestBucket
+          S3_KEY: test.txt
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref TestBucket
