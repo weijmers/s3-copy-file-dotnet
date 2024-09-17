@@ -4,3 +4,6 @@ obj
 
 # aws sam build files
 .aws-sam
+
+# visual studio specific
+.vs

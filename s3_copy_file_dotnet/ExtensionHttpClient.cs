@@ -38,8 +38,8 @@ internal class ExtensionHttpClient
         request.Headers.Add("Lambda-Extension-Name", "NAME");
         request.Headers.Add("Content-Type", "application/json");
 
-        var response = await httpClient.PostAsync("register", content);
-        return response.Headers["lambda-extension-identifier"];
+        var response = await httpClient.SendAsync(request);
+        return string.Join(", ", response.Headers.GetValues("lambda-extension-identifier"));
     }
 
     public async Task<(string? type, string payload)> Next(string id)
@@ -49,8 +49,9 @@ internal class ExtensionHttpClient
         request.Headers.Add("Content-Type", "application/json");
 
         var response = await httpClient.SendAsync(request);
+        var responseContent = await response.Content.ReadAsStringAsync();
 
-        using var doc = JsonDocument.Parse(response);
-        return (doc.RootElement.GetProperty("eventType").GetString(), response);
+        using var doc = JsonDocument.Parse(responseContent);
+        return (doc.RootElement.GetProperty("eventType").GetString(), responseContent);
     }
 }
