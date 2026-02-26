@@ -7,7 +7,7 @@ Resources:
       LayerName: s3_copy_file_dotnet
       ContentUri: .
       CompatibleRuntimes:
-        - dotnet8
+        - dotnet10
       CompatibleArchitectures:
         - x86_64
       RetentionPolicy: Retain
@@ -20,7 +20,7 @@ Resources:
     Properties:
       CodeUri: ./functions
       Handler: functions::functions.Test::Handler
-      Runtime: dotnet8
+      Runtime: dotnet10
       MemorySize: 512
       Timeout: 30
       Layers:
