@@ -2,8 +2,8 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "s3-copy-file-dotnet"
+stack_name = "s3-copy-file-dotnet-10"
 resolve_s3 = true
-s3_prefix = "s3-copy-file-dotnet"
+s3_prefix = "s3-copy-file-dotnet-10"
 region = "eu-north-1"
 capabilities = "CAPABILITY_IAM"
