@@ -13,6 +13,12 @@ Resources:
       RetentionPolicy: Retain
     Metadata:
       BuildMethod: makefile
+  S3CopyFileLayerArnParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /s3_copy_file_dotnet10/latest-arn
+      Type: String
+      Value: !Ref S3CopyFile
   TestBucket:
     Type: AWS::S3::Bucket
   TestLambda:
@@ -32,9 +38,3 @@ Resources:
       Policies:
         - S3ReadPolicy:
             BucketName: !Ref TestBucket
-
-Outputs:
-  S3CopyFile:
-    Value: !Ref S3CopyFile
-    Export:
-      Name: S3CopyFile
